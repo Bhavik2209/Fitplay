@@ -1,6 +1,3 @@
-# Flask application to capture live webcam stream and send the frames
-# to the web page that is displaying the game
-
 # Import necessary packages
 from flask import Flask, render_template, Response
 import time

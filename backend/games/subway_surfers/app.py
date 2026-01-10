@@ -14,8 +14,8 @@ app = Flask(__name__)
 
 # generate frames and yield to Response
 def gen_frames():
-	# Load cascades
-	face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+	# Load cascades - use cv2's built-in haarcascade
+	face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
 	# Start the video stream through the webcam
 	vs = VideoStream(src=0).start()
@@ -25,6 +25,7 @@ def gen_frames():
 	ACTION_COOLDOWN = 0.3
 	last_action_time = 0
 	curr_action = "CENTER"
+	last_triggered_action = None
 	
 	# Calibration - store neutral face center position
 	neutral_face_x = None
@@ -96,18 +97,20 @@ def gen_frames():
 						(face_center_x, face_center_y), (255, 255, 0), 2)
 				
 				# Thresholds for movement detection
-				# These are in pixels - adjust based on your distance from camera
-				LEFT_THRESH = 30   # Face shifts RIGHT when you turn LEFT
-				RIGHT_THRESH = -30  # Face shifts LEFT when you turn RIGHT
-				UP_THRESH = -25     # Face moves UP when you look up
-				DOWN_THRESH = 25    # Face moves DOWN when you look down
+				# Camera is MIRRORED: when you turn LEFT, face appears at RIGHT (positive x_shift)
+				# So we REVERSE the action mapping
+				LEFT_THRESH = 30    # Positive x_shift = turn LEFT in real life
+				RIGHT_THRESH = -30  # Negative x_shift = turn RIGHT in real life
+				UP_THRESH = -25     # Negative y_shift = look UP
+				DOWN_THRESH = 25    # Positive y_shift = look DOWN
 				
-				# Detect neck rotation based on face position shift
+				# Detect neck rotation - FIXED REVERSAL
+				# When you turn LEFT, face shifts RIGHT (positive), so we check positive for LEFT
 				if x_shift > LEFT_THRESH:
-					action = "left"
+					action = "right"  # REVERSED: positive shift = right arrow
 					text_color = (255, 100, 0)
 				elif x_shift < RIGHT_THRESH:
-					action = "right"
+					action = "left"   # REVERSED: negative shift = left arrow
 					text_color = (255, 100, 0)
 				elif y_shift < UP_THRESH:
 					action = "up"
@@ -134,10 +137,19 @@ def gen_frames():
 						   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
 		
 		# Trigger Action
-		if action and (time.time() - last_action_time > ACTION_COOLDOWN):
-			pyautogui.press(action)
-			curr_action = action
-			last_action_time = time.time()
+		# Single Trigger Logic:
+		# 1. If action detected AND it's different from last triggered action -> Press Key
+		# 2. If NO action detected (center) -> Reset last triggered action to None
+		
+		if action:
+			if action != last_triggered_action:
+				pyautogui.press(action)
+				last_triggered_action = action
+				curr_action = action
+				last_action_time = time.time()
+		else:
+			# Returned to center/neutral zone
+			last_triggered_action = None
 		
 		# Display Current Action - Large and centered
 		if time.time() - last_action_time < 0.6:

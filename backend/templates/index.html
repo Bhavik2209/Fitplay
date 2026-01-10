@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}FitPlay - Choose Your Exercise{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1 class="title">
+            <span class="gradient-text">FitPlay</span>
+        </h1>
+        <p class="subtitle">Choose Your Exercise</p>
+    </div>
+
+    <div class="exercises-grid">
+        <!-- Neck Exercise Card -->
+        <div class="exercise-card" onclick="selectExercise('neck')">
+            <div class="card-glow neck-glow"></div>
+            <div class="card-content">
+                <div class="icon-wrapper">
+                    <svg class="exercise-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M12 12v8" />
+                        <path d="M8 16l4-2l4 2" />
+                    </svg>
+                </div>
+                <h2 class="exercise-title">Neck Exercise</h2>
+                <p class="exercise-description">Control games with head movements and neck rotations</p>
+                <div class="exercise-badge">Computer Vision</div>
+            </div>
+        </div>
+
+        <!-- Jumping Exercise Card -->
+        <div class="exercise-card" onclick="selectExercise('jumping')">
+            <div class="card-glow jumping-glow"></div>
+            <div class="card-content">
+                <div class="icon-wrapper">
+                    <svg class="exercise-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v6" />
+                        <path d="M12 18v4" />
+                        <circle cx="12" cy="12" r="2" />
+                        <path d="M4.93 4.93l4.24 4.24" />
+                        <path d="M14.83 14.83l4.24 4.24" />
+                        <path d="M4.93 19.07l4.24-4.24" />
+                        <path d="M14.83 9.17l4.24-4.24" />
+                    </svg>
+                </div>
+                <h2 class="exercise-title">Jumping Exercise</h2>
+                <p class="exercise-description">Jump and squat to control your character's actions</p>
+                <div class="exercise-badge">Motion Tracking</div>
+            </div>
+        </div>
+
+        <!-- Boxing Exercise Card -->
+        <div class="exercise-card" onclick="selectExercise('boxing')">
+            <div class="card-glow boxing-glow"></div>
+            <div class="card-content">
+                <div class="icon-wrapper">
+                    <svg class="exercise-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0" />
+                        <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2" />
+                        <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8" />
+                        <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8v-3a2 2 0 1 1 4 0" />
+                    </svg>
+                </div>
+                <h2 class="exercise-title">Boxing Exercise</h2>
+                <p class="exercise-description">Throw punches and jabs with hand movement detection</p>
+                <div class="exercise-badge">Hand Tracking</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p class="footer-text">Your body is the controller 🎮</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function selectExercise(type) {
+        // Add click animation
+        event.currentTarget.classList.add('clicked');
+
+        // Navigate after animation
+        setTimeout(() => {
+            window.location.href = `/exercise/${type}`;
+        }, 300);
+    }
+
+    // Add entrance animations
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.exercise-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.classList.add('fade-in');
+        });
+    });
+</script>
+{% endblock %}

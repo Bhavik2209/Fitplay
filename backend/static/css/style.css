@@ -1,0 +1,282 @@
+:root {
+    /* Dark Mode - Matching Frontend Theme */
+    --background: hsl(10, 8%, 6%);
+    --foreground: hsl(40, 10%, 95%);
+    --card: hsl(10, 8%, 9%);
+    --card-foreground: hsl(40, 10%, 95%);
+    --primary: hsl(38, 90%, 60%);
+    --primary-foreground: hsl(10, 8%, 6%);
+    --accent: hsl(150, 30%, 55%);
+    --energy: hsl(15, 80%, 60%);
+    --border: hsl(10, 6%, 18%);
+    --muted: hsl(10, 6%, 12%);
+    --muted-foreground: hsl(40, 5%, 60%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: slide-down 0.6s ease-out;
+}
+
+.title {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary), hsl(38, 90%, 70%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+    background-size: 200% 100%;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: var(--muted-foreground);
+    font-weight: 400;
+}
+
+/* Exercise Grid */
+.exercises-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* Exercise Cards */
+.exercise-card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+}
+
+.exercise-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.exercise-card.clicked {
+    transform: scale(0.95);
+}
+
+/* Glow Effects */
+.card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    filter: blur(20px);
+}
+
+.exercise-card:hover .card-glow {
+    opacity: 0.15;
+}
+
+.neck-glow {
+    background: radial-gradient(circle at 50% 50%, var(--primary), transparent 70%);
+}
+
+.jumping-glow {
+    background: radial-gradient(circle at 50% 50%, var(--accent), transparent 70%);
+}
+
+.boxing-glow {
+    background: radial-gradient(circle at 50% 50%, var(--energy), transparent 70%);
+}
+
+.card-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Icons */
+.icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--muted);
+    border-radius: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.exercise-card:hover .icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.exercise-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--primary);
+}
+
+.exercise-card:nth-child(2) .exercise-icon {
+    color: var(--accent);
+}
+
+.exercise-card:nth-child(3) .exercise-icon {
+    color: var(--energy);
+}
+
+/* Text */
+.exercise-title {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--foreground);
+}
+
+.exercise-description {
+    font-size: 1rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* Badge */
+.exercise-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.exercise-card:nth-child(2) .exercise-badge {
+    background: var(--accent);
+    color: var(--background);
+}
+
+.exercise-card:nth-child(3) .exercise-badge {
+    background: var(--energy);
+    color: var(--background);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    animation: fade-in 1s ease-out 0.6s both;
+}
+
+.footer-text {
+    font-size: 1.125rem;
+    color: var(--muted-foreground);
+    font-weight: 500;
+}
+
+/* Animations */
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.25rem;
+    }
+
+    .exercises-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .exercise-card {
+        padding: 2rem;
+    }
+}

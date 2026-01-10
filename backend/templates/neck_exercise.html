@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitPlay - Neck Exercise | Subway Surfers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --background: hsl(10, 8%, 6%);
+            --foreground: hsl(40, 10%, 95%);
+            --card: hsl(10, 8%, 9%);
+            --primary: hsl(38, 90%, 60%);
+            --primary-foreground: hsl(10, 8%, 6%);
+            --accent: hsl(150, 30%, 55%);
+            --border: hsl(10, 6%, 18%);
+            --muted: hsl(10, 6%, 12%);
+            --muted-foreground: hsl(40, 5%, 60%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            height: 60px;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), hsl(38, 90%, 70%));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .exercise-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            background: var(--muted);
+            color: var(--foreground);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--border);
+            transform: translateY(-1px);
+        }
+
+        /* Main Layout */
+        .game-container {
+            display: flex;
+            height: 100vh;
+            padding-top: 60px;
+        }
+
+        .game-section {
+            flex: 1;
+            position: relative;
+            background: black;
+            border-right: 2px solid var(--border);
+            overflow: auto;
+            /* Allow scrolling if needed */
+        }
+
+        .game-iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 400px;
+            background: var(--card);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Video Feed */
+        .video-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--foreground);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .video-feed {
+            width: 100%;
+            border-radius: 0.75rem;
+            border: 2px solid var(--border);
+            background: black;
+        }
+
+        /* Instructions */
+        .instructions-section {
+            padding: 1.5rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .instruction-card {
+            background: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .instruction-card h3 {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .instruction-card p {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: var(--muted-foreground);
+            margin: 0;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .control-item {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .control-item.center {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .control-item.up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .control-item.down {
+            grid-column: 2;
+            grid-row: 3;
+        }
+
+        .control-item.left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .control-item.right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .control-arrow {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .control-label {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tip-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tip-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            line-height: 1.5;
+        }
+
+        .tip-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Calibration Notice */
+        .calibration-notice {
+            background: linear-gradient(135deg, hsl(38, 90%, 60%, 0.1), hsl(38, 90%, 70%, 0.05));
+            border: 1px solid var(--primary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .calibration-notice h3 {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .calibration-notice p {
+            font-size: 0.875rem;
+            color: var(--foreground);
+            margin: 0;
+        }
+
+        /* Scrollbar Styling */
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--card);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-foreground);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 320px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+            }
+
+            .game-section {
+                height: 60vh;
+                border-right: none;
+                border-bottom: 2px solid var(--border);
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+            }
+        }
+
+        /* Calibration Overlay */
+        .calibration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            transition: opacity 0.5s ease;
+        }
+
+        .calibration-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .overlay-content {
+            text-align: center;
+            color: white;
+            animation: scale-in 0.3s ease-out;
+        }
+
+        .overlay-content h1 {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .overlay-content p {
+            font-size: 1.5rem;
+            color: var(--muted-foreground);
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--muted);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes scale-in {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div class="logo">FitPlay</div>
+            <div class="exercise-label">
+                <div class="status-dot"></div>
+                <span>Neck Exercise • Subway Surfers</span>
+            </div>
+        </div>
+        <a href="/" class="back-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5" />
+                <path d="M12 19l-7-7 7-7" />
+            </svg>
+            Exit
+        </a>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="game-container">
+        <!-- Game Section -->
+        <div class="game-section">
+            <iframe class="game-iframe" src="https://subwaysurfersonline.io/" scrolling="yes" seamless
+                allowfullscreen></iframe>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Video Feed -->
+            <div class="video-section">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
+                        <line x1="7" y1="2" x2="7" y2="22" />
+                        <line x1="17" y1="2" x2="17" y2="22" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <line x1="2" y1="7" x2="7" y2="7" />
+                        <line x1="2" y1="17" x2="7" y2="17" />
+                        <line x1="17" y1="17" x2="22" y2="17" />
+                        <line x1="17" y1="7" x2="22" y2="7" />
+                    </svg>
+                    Live Webcam Feed
+                </div>
+                <img src="{{ url_for('neck_video_feed') }}" class="video-feed" alt="Webcam Feed">
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions-section">
+                <!-- Calibration Notice -->
+                <div class="calibration-notice">
+                    <h3>⚠️ Calibration Required</h3>
+                    <p>Look straight at the camera for 30 frames during initial calibration. Stay centered!</p>
+                </div>
+
+                <!-- How to Play -->
+                <div class="instruction-card">
+                    <h3>How to Play</h3>
+                    <p>Move your head in any direction to control the player. Your face position is tracked and
+                        converted to game controls.</p>
+                </div>
+
+                <!-- Controls -->
+                <div class="instruction-card">
+                    <h3>Controls</h3>
+                    <div class="control-grid">
+                        <div class="control-item up">
+                            <div class="control-arrow">↑</div>
+                            <div class="control-label">Up</div>
+                        </div>
+                        <div class="control-item left">
+                            <div class="control-arrow">←</div>
+                            <div class="control-label">Left</div>
+                        </div>
+                        <div class="control-item center">
+                            <div class="control-arrow">●</div>
+                            <div class="control-label">Center</div>
+                        </div>
+                        <div class="control-item right">
+                            <div class="control-arrow">→</div>
+                            <div class="control-label">Right</div>
+                        </div>
+                        <div class="control-item down">
+                            <div class="control-arrow">↓</div>
+                            <div class="control-label">Down</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips -->
+                <div class="instruction-card">
+                    <h3>Tips & Tricks</h3>
+                    <ul class="tip-list">
+                        <li>Face the screen at all times for best detection</li>
+                        <li>Move your head, not just your eyes</li>
+                        <li>Keep movements smooth and controlled</li>
+                        <li>Monitor your position in the video feed</li>
+                        <li>Recalibrate if you change your seating position</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Calibration Overlay -->
+    <div id="calibration-overlay" class="calibration-overlay">
+        <div class="overlay-content">
+            <div class="spinner"></div>
+            <h1 id="overlay-title">Loading Camera...</h1>
+            <p id="overlay-message">Please wait while we connect to your webcam</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('calibration-overlay');
+            const title = document.getElementById('overlay-title');
+            const message = document.getElementById('overlay-message');
+            const videoFeed = document.querySelector('.video-feed');
+
+            // Function to start calibration countdown
+            const startCalibration = () => {
+                title.textContent = "Hold Head Still";
+                let count = 3;
+                message.innerHTML = `Calibrating center point in <span id="countdown">${count}</span>...`;
+
+                const countdownEl = document.getElementById('countdown');
+
+                const timer = setInterval(() => {
+                    count--;
+                    if (count > 0) {
+                        countdownEl.textContent = count;
+                    } else {
+                        clearInterval(timer);
+                        overlay.classList.add('fade-out');
+                        setTimeout(() => {
+                            overlay.style.display = 'none';
+                        }, 500);
+                    }
+                }, 1000);
+            };
+
+            // Check if image is already loaded or wait for load event
+            if (videoFeed.complete && videoFeed.naturalHeight !== 0) {
+                startCalibration();
+            } else {
+                videoFeed.onload = () => {
+                    startCalibration();
+                };
+                // Fallback if onload doesn't fire (sometimes happens with MJPEG streams)
+                setTimeout(() => {
+                    if (document.getElementById('countdown') === null) {
+                        startCalibration();
+                    }
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+
+</html>

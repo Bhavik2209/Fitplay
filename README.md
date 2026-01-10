@@ -1,6 +1,18 @@
 # Autonomous Fitness Gaming Platform
 
-## Agentic AI–Driven Concept Document
+## Gameplay Screenshots
+
+Real gameplay footage - exercising while playing:
+
+![FitPlay Exercise Gameplay 1](public/images/Screenshot%202026-01-10%20165955.png)
+*AI pose detection tracking exercises in real-time*
+
+![FitPlay Exercise Gameplay 2](public/images/Screenshot%202026-01-10%20170031.png)
+*Boss battle with live movement tracking*
+
+---
+
+## Licensetic AI–Driven Concept Document
 
 **Hackathon:** Autonomous Hackathon 2026
 **Tagline:** Where Games Build Your Health

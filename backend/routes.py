@@ -20,6 +20,16 @@ def register_routes(app):
     def neck_exercise():
         # Serve the subway surfers game
         return render_template('neck_exercise.html')
+        
+    @app.route('/exercise/hill-climbing')
+    def hill_climbing():
+        return render_template('hill_climbing.html')
+        
+    @app.route('/exercise/hill-climbing/video_feed')
+    def hill_climbing_feed():
+        from games.hill_climbing.app import gen_frames
+        from flask import Response
+        return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
     
     # Video feed for Subway Surfers
     @app.route('/exercise/neck/video_feed')

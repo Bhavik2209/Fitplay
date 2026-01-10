@@ -4,10 +4,10 @@
 
 Real gameplay footage - exercising while playing:
 
-![FitPlay Exercise Gameplay 1](public/images/Screenshot%202026-01-10%20165955.png)
+![FitPlay Exercise Gameplay 1](public/images/gameplay-action-1.png)
 *AI pose detection tracking exercises in real-time*
 
-![FitPlay Exercise Gameplay 2](public/images/Screenshot%202026-01-10%20170031.png)
+![FitPlay Exercise Gameplay 2](public/images/gameplay-action-2.png)
 *Boss battle with live movement tracking*
 
 ---

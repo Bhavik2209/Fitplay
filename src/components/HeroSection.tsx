@@ -86,20 +86,7 @@ const HeroSection = () => {
           </div>
 
           {/* Stats - clean and minimal */}
-          <div className="pt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
-            <div className="text-center space-y-1">
-              <div className="text-3xl font-display font-bold font-mono">10K+</div>
-              <div className="text-sm text-muted-foreground">Active Players</div>
-            </div>
-            <div className="text-center space-y-1">
-              <div className="text-3xl font-display font-bold font-mono">500M</div>
-              <div className="text-sm text-muted-foreground">Reps Tracked</div>
-            </div>
-            <div className="text-center space-y-1">
-              <div className="text-3xl font-display font-bold font-mono">98%</div>
-              <div className="text-sm text-muted-foreground">Satisfaction</div>
-            </div>
-          </div>
+
 
         </div>
       </div>

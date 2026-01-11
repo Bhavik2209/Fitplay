@@ -131,6 +131,10 @@ body {
     background: radial-gradient(circle at 50% 50%, var(--energy), transparent 70%);
 }
 
+.diet-glow {
+    background: radial-gradient(circle at 50% 50%, hsl(150, 50%, 60%), transparent 70%);
+}
+
 .card-content {
     position: relative;
     z-index: 1;
@@ -207,6 +211,15 @@ body {
 
 .exercise-card:nth-child(3) .exercise-badge {
     background: var(--energy);
+    color: var(--background);
+}
+
+.exercise-card:nth-child(4) .exercise-icon {
+    color: hsl(150, 50%, 60%);
+}
+
+.exercise-card:nth-child(4) .exercise-badge {
+    background: hsl(150, 50%, 60%);
     color: var(--background);
 }
 

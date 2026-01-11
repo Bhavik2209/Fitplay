@@ -63,6 +63,23 @@
                 <div class="exercise-badge">Hand Tracking</div>
             </div>
         </div>
+
+        <!-- Diet Planner Card -->
+        <div class="exercise-card" onclick="selectExercise('diet-planner')">
+            <div class="card-glow diet-glow"></div>
+            <div class="card-content">
+                <div class="icon-wrapper">
+                    <svg class="exercise-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                        <path d="M8 10h8M8 14h8M12 6v12"/>
+                        <circle cx="12" cy="12" r="1"/>
+                    </svg>
+                </div>
+                <h2 class="exercise-title">AI Diet Planner</h2>
+                <p class="exercise-description">Get personalized diet plans powered by agentic AI</p>
+                <div class="exercise-badge">AI Nutritionist</div>
+            </div>
+        </div>
     </div>
 
     <div class="footer">
@@ -79,7 +96,11 @@
 
         // Navigate after animation
         setTimeout(() => {
-            window.location.href = `/exercise/${type}`;
+            if (type === 'diet-planner') {
+                window.location.href = '/diet-planner';
+            } else {
+                window.location.href = `/exercise/${type}`;
+            }
         }, 300);
     }
 

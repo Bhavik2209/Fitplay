@@ -1,0 +1,843 @@
+{% extends "base.html" %}
+
+{% block title %}FitPlay - AI Diet Planner{% endblock %}
+
+{% block extra_css %}
+<style>
+    .diet-glow {
+        background: radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.3), transparent 70%);
+    }
+    
+    .diet-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .diet-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .diet-header h1 {
+        font-family: 'Space Grotesk', system-ui, sans-serif;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, hsl(150, 50%, 60%), hsl(150, 50%, 70%));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .diet-layout {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 2rem;
+    }
+
+    .sidebar {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 2rem;
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .sidebar h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--foreground);
+    }
+
+    .sidebar-section {
+        margin-bottom: 2rem;
+    }
+
+    .sidebar-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        color: var(--foreground);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--foreground);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        color: var(--foreground);
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: hsl(150, 50%, 60%);
+    }
+
+    .form-group input[type="checkbox"] {
+        width: auto;
+        margin-right: 0.5rem;
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        background: var(--muted);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .checkbox-item:hover {
+        background: var(--border);
+    }
+
+    .checkbox-item input {
+        margin-right: 0.5rem;
+    }
+
+    .demo-info {
+        background: hsl(150, 30%, 20%);
+        border: 1px solid hsl(150, 30%, 40%);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .main-content {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 2rem;
+    }
+
+    .profile-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .metric-card {
+        background: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: hsl(150, 50%, 60%);
+        margin-bottom: 0.25rem;
+    }
+
+    .metric-label {
+        font-size: 0.85rem;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .generate-btn {
+        width: 100%;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, hsl(150, 50%, 60%), hsl(150, 50%, 70%));
+        color: var(--background);
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        margin-top: 2rem;
+    }
+
+    .generate-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .generate-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .result-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .result-section h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        color: var(--foreground);
+    }
+
+    .tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+        padding: 0.75rem 1.5rem;
+        background: none;
+        border: none;
+        color: var(--muted-foreground);
+        cursor: pointer;
+        font-size: 1rem;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s;
+    }
+
+    .tab.active {
+        color: hsl(150, 50%, 60%);
+        border-bottom-color: hsl(150, 50%, 60%);
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .diet-plan-content {
+        background: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        line-height: 1.8;
+        color: var(--foreground);
+    }
+
+    .diet-plan-content h1,
+    .diet-plan-content h2,
+    .diet-plan-content h3,
+    .diet-plan-content h4 {
+        color: hsl(150, 50%, 60%);
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .diet-plan-content h1 {
+        font-size: 2rem;
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 0.5rem;
+    }
+
+    .diet-plan-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .diet-plan-content h3 {
+        font-size: 1.25rem;
+    }
+
+    .diet-plan-content ul,
+    .diet-plan-content ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .diet-plan-content li {
+        margin-bottom: 0.5rem;
+    }
+
+    .diet-plan-content p {
+        margin-bottom: 1rem;
+    }
+
+    .diet-plan-content strong {
+        color: hsl(150, 50%, 70%);
+        font-weight: 600;
+    }
+
+    .diet-plan-content code {
+        background: var(--background);
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.25rem;
+        font-family: monospace;
+    }
+
+    .diet-plan-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+
+    .diet-plan-content table th,
+    .diet-plan-content table td {
+        border: 1px solid var(--border);
+        padding: 0.5rem;
+        text-align: left;
+    }
+
+    .diet-plan-content table th {
+        background: var(--background);
+        font-weight: 600;
+    }
+
+    .download-btn {
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: hsl(150, 50%, 60%);
+        color: var(--background);
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+
+    .download-btn:hover {
+        background: hsl(150, 50%, 70%);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .stat-card {
+        background: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .exercises-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: hsl(150, 50%, 60%);
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: var(--muted-foreground);
+        margin-top: 0.5rem;
+    }
+
+    @media (max-width: 1024px) {
+        .diet-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+            position: static;
+        }
+
+        .profile-summary {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .profile-summary,
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="diet-container">
+    <div class="diet-header">
+        <h1>🥗 AI-Powered Diet Plan Generator</h1>
+        <p style="color: var(--muted-foreground); font-size: 1.2rem;">Personalized nutrition planning with AI agents</p>
+    </div>
+
+    <div class="diet-layout">
+        <!-- Sidebar Form -->
+        <div class="sidebar">
+            <h2>📋 Your Profile</h2>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="useDemo" checked> 
+                    🚀 Use Demo Profile (Quick Start)
+                </label>
+            </div>
+
+            <div id="demoInfo" class="demo-info">
+                <strong>Demo Profile Loaded:</strong><br>
+                - 28 year old male<br>
+                - Goal: Muscle Gain<br>
+                - Vegetarian diet<br>
+                - Strength training
+            </div>
+
+            <form id="dietForm">
+                <div class="sidebar-section">
+                    <h3>Basic Info</h3>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" min="10" max="100" value="28" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="male" selected>Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="height_cm">Height (cm)</label>
+                        <input type="number" id="height_cm" name="height_cm" min="100" max="250" step="0.5" value="175.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight_kg">Weight (kg)</label>
+                        <input type="number" id="weight_kg" name="weight_kg" min="30" max="200" step="0.5" value="75.0" required>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Lifestyle</h3>
+                    <div class="form-group">
+                        <label for="activity_level">Activity Level</label>
+                        <select id="activity_level" name="activity_level" required>
+                            <option value="sedentary">Sedentary</option>
+                            <option value="light">Light</option>
+                            <option value="moderate" selected>Moderate</option>
+                            <option value="active">Active</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal">Goal</label>
+                        <select id="goal" name="goal" required>
+                            <option value="weight_loss">Weight Loss</option>
+                            <option value="weight_gain">Weight Gain</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="muscle_gain" selected>Muscle Gain</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="workout_type">Workout Type</label>
+                        <select id="workout_type" name="workout_type" required>
+                            <option value="none">None</option>
+                            <option value="cardio">Cardio</option>
+                            <option value="strength" selected>Strength</option>
+                            <option value="mixed">Mixed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Diet Preferences</h3>
+                    <div class="form-group">
+                        <label for="diet_type">Diet Type</label>
+                        <select id="diet_type" name="diet_type" required>
+                            <option value="vegetarian" selected>Vegetarian</option>
+                            <option value="vegan">Vegan</option>
+                            <option value="eggetarian">Eggetarian</option>
+                            <option value="non_vegetarian">Non-Vegetarian</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="allergies">Allergies (comma-separated)</label>
+                        <input type="text" id="allergies" name="allergies" value="peanuts" placeholder="peanuts, dairy">
+                    </div>
+                    <div class="form-group">
+                        <label for="food_avoid">Foods to Avoid (comma-separated)</label>
+                        <input type="text" id="food_avoid" name="food_avoid" value="mushrooms" placeholder="mushrooms, eggs">
+                    </div>
+                    <div class="form-group">
+                        <label>Health Conditions</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="diabetes" name="health_conditions" value="diabetes">
+                                <label for="diabetes">Diabetes</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="thyroid" name="health_conditions" value="thyroid">
+                                <label for="thyroid">Thyroid</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pcos" name="health_conditions" value="pcos">
+                                <label for="pcos">PCOS</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="hypertension" name="health_conditions" value="hypertension">
+                                <label for="hypertension">Hypertension</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Location & Plan</h3>
+                    <div class="form-group">
+                        <label for="region">Region</label>
+                        <input type="text" id="region" name="region" value="India" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="plan_duration_days">Plan Duration (days)</label>
+                        <select id="plan_duration_days" name="plan_duration_days" required>
+                            <option value="1">1 day</option>
+                            <option value="7" selected>7 days</option>
+                            <option value="30">30 days</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="max_iteration">Max Optimization Iterations</label>
+                        <input type="range" id="max_iteration" name="max_iteration" min="1" max="5" value="3">
+                        <span id="max_iteration_value">3</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div id="profileSummary" class="profile-summary">
+                <div class="metric-card">
+                    <div class="metric-value" id="summaryAge">28 years</div>
+                    <div class="metric-label">Age</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="summaryGoal">Muscle Gain</div>
+                    <div class="metric-label">Goal</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="summaryHeight">175 cm</div>
+                    <div class="metric-label">Height</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="summaryDiet">Vegetarian</div>
+                    <div class="metric-label">Diet Type</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="summaryWeight">75 kg</div>
+                    <div class="metric-label">Weight</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="summaryActivity">Moderate</div>
+                    <div class="metric-label">Activity</div>
+                </div>
+            </div>
+
+            <div id="planSettings" style="background: var(--muted); padding: 1rem; border-radius: 0.5rem; margin-bottom: 2rem;">
+                <strong>⚙️ Plan Settings:</strong><br>
+                <span id="settingsDuration">Duration: 7 days</span> | 
+                <span id="settingsIterations">Max Iterations: 3</span> | 
+                <span id="settingsWorkout">Workout: Strength</span>
+            </div>
+
+            <button id="generateBtn" class="generate-btn">🚀 Generate My Diet Plan</button>
+
+            <div id="resultSection" class="result-section" style="display: none;">
+                <h2>📄 Your Personalized Diet Plan</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('final')">📋 Final Plan</button>
+                    <button class="tab" onclick="switchTab('feedback')">📝 Feedback History</button>
+                    <button class="tab" onclick="switchTab('history')">📊 Plan History</button>
+                </div>
+
+                <div id="tabFinal" class="tab-content active">
+                    <h3>✨ Your Optimized Diet Plan</h3>
+                    <div id="dietPlanContent" class="diet-plan-content"></div>
+                    <button id="downloadBtn" class="download-btn">📥 Download Diet Plan</button>
+                </div>
+
+                <div id="tabFeedback" class="tab-content">
+                    <h3>💬 Evaluation Feedback History</h3>
+                    <div id="feedbackContent"></div>
+                </div>
+
+                <div id="tabHistory" class="tab-content">
+                    <h3>📚 All Generated Plans</h3>
+                    <div id="historyContent"></div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statIterations">0</div>
+                        <div class="stat-label">Total Iterations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statStatus">-</div>
+                        <div class="stat-label">Plan Status</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statVersions">0</div>
+                        <div class="stat-label">Plan Versions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statFeedback">0</div>
+                        <div class="stat-label">Feedback Count</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Update summary when form changes
+    function updateSummary() {
+        document.getElementById('summaryAge').textContent = document.getElementById('age').value + ' years';
+        document.getElementById('summaryGoal').textContent = document.getElementById('goal').value.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        document.getElementById('summaryHeight').textContent = document.getElementById('height_cm').value + ' cm';
+        document.getElementById('summaryDiet').textContent = document.getElementById('diet_type').value.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        document.getElementById('summaryWeight').textContent = document.getElementById('weight_kg').value + ' kg';
+        document.getElementById('summaryActivity').textContent = document.getElementById('activity_level').value.replace(/\b\w/g, l => l.toUpperCase());
+        
+        document.getElementById('settingsDuration').textContent = 'Duration: ' + document.getElementById('plan_duration_days').value + ' days';
+        document.getElementById('settingsIterations').textContent = 'Max Iterations: ' + document.getElementById('max_iteration').value;
+        document.getElementById('settingsWorkout').textContent = 'Workout: ' + document.getElementById('workout_type').value.replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    // Demo profile toggle
+    document.getElementById('useDemo').addEventListener('change', function() {
+        const useDemo = this.checked;
+        document.getElementById('demoInfo').style.display = useDemo ? 'block' : 'none';
+        
+        if (useDemo) {
+            document.getElementById('age').value = 28;
+            document.getElementById('gender').value = 'male';
+            document.getElementById('height_cm').value = 175.0;
+            document.getElementById('weight_kg').value = 75.0;
+            document.getElementById('activity_level').value = 'moderate';
+            document.getElementById('goal').value = 'muscle_gain';
+            document.getElementById('diet_type').value = 'vegetarian';
+            document.getElementById('allergies').value = 'peanuts';
+            document.getElementById('food_avoid').value = 'mushrooms';
+            document.getElementById('region').value = 'India';
+            document.getElementById('workout_type').value = 'strength';
+            document.getElementById('plan_duration_days').value = '7';
+            document.getElementById('max_iteration').value = 3;
+            document.getElementById('max_iteration_value').textContent = 3;
+            
+            // Clear health conditions
+            document.querySelectorAll('input[name="health_conditions"]').forEach(cb => cb.checked = false);
+        }
+        updateSummary();
+    });
+
+    // Update max iteration display
+    document.getElementById('max_iteration').addEventListener('input', function() {
+        document.getElementById('max_iteration_value').textContent = this.value;
+        updateSummary();
+    });
+
+    // Update summary on form changes
+    document.getElementById('dietForm').addEventListener('input', updateSummary);
+    document.getElementById('dietForm').addEventListener('change', updateSummary);
+    updateSummary();
+
+    // Tab switching
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+    }
+
+    // Simple markdown parser
+    function parseMarkdown(text) {
+        if (!text) return '';
+        
+        let html = text;
+        
+        // Headers
+        html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+        html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+        html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+        
+        // Bold
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\_\_(.*?)\_\_/g, '<strong>$1</strong>');
+        
+        // Italic
+        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        html = html.replace(/\_(.*?)\_/g, '<em>$1</em>');
+        
+        // Unordered lists
+        html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+        html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
+        
+        // Wrap consecutive <li> in <ul>
+        html = html.replace(/(<li>.*<\/li>)/s, function(match) {
+            return '<ul>' + match + '</ul>';
+        });
+        
+        // Ordered lists
+        html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+        
+        // Line breaks and paragraphs
+        html = html.replace(/\n\n/g, '</p><p>');
+        html = html.replace(/\n/g, '<br>');
+        
+        // Wrap in paragraph if not already wrapped
+        if (!html.startsWith('<')) {
+            html = '<p>' + html + '</p>';
+        }
+        
+        return html;
+    }
+
+    // Generate diet plan
+    document.getElementById('generateBtn').addEventListener('click', async function() {
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = '⏳ Generating...';
+        
+        // Collect form data
+        const formData = {
+            age: parseInt(document.getElementById('age').value),
+            gender: document.getElementById('gender').value,
+            height_cm: parseFloat(document.getElementById('height_cm').value),
+            weight_kg: parseFloat(document.getElementById('weight_kg').value),
+            activity_level: document.getElementById('activity_level').value,
+            goal: document.getElementById('goal').value,
+            diet_type: document.getElementById('diet_type').value,
+            allergies: document.getElementById('allergies').value.split(',').map(a => a.trim()).filter(a => a),
+            food_avoid: document.getElementById('food_avoid').value.split(',').map(f => f.trim()).filter(f => f),
+            health_conditions: Array.from(document.querySelectorAll('input[name="health_conditions"]:checked')).map(cb => cb.value),
+            region: document.getElementById('region').value,
+            workout_type: document.getElementById('workout_type').value,
+            plan_duration_days: parseInt(document.getElementById('plan_duration_days').value),
+            max_iteration: parseInt(document.getElementById('max_iteration').value)
+        };
+
+        // Hide result section while generating
+        document.getElementById('resultSection').style.display = 'none';
+
+        try {
+            const response = await fetch('/api/diet-plan/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            if (!response.ok) {
+                console.log(response, "response error");
+                throw new Error('Failed to generate diet plan');
+            }
+
+            const result = await response.json();
+            
+            // Display results
+            displayResults(result);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error: ' + error.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '🚀 Generate My Diet Plan';
+        }
+    });
+
+    function displayResults(result) {
+        // Show results
+        document.getElementById('resultSection').style.display = 'block';
+
+        // Display diet plan with markdown rendering
+        const dietPlanContent = document.getElementById('dietPlanContent');
+        dietPlanContent.innerHTML = parseMarkdown(result.diet_plan || 'No plan generated');
+        
+        // Display feedback
+        const feedbackContent = document.getElementById('feedbackContent');
+        if (result.feedback_list && result.feedback_list.length > 0) {
+            feedbackContent.innerHTML = result.feedback_list.map((fb, i) => 
+                `<div style="background: var(--muted); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    <strong>Iteration ${i + 1}:</strong><br><br>
+                    <div style="line-height: 1.6;">${parseMarkdown(fb || 'No feedback')}</div>
+                </div>`
+            ).join('');
+        } else {
+            feedbackContent.innerHTML = '<div style="background: var(--muted); padding: 1rem; border-radius: 0.5rem;">Plan was approved on first try! 🎉</div>';
+        }
+
+        // Display history
+        const historyContent = document.getElementById('historyContent');
+        if (result.plan_history && result.plan_history.length > 0) {
+            historyContent.innerHTML = result.plan_history.map((plan, i) => 
+                `<details style="background: var(--muted); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    <summary style="cursor: pointer; font-weight: 600; padding: 0.5rem;">Version ${i + 1} ${i === result.plan_history.length - 1 ? '✨ (Final)' : ''}</summary>
+                    <div style="margin-top: 1rem; line-height: 1.6;">${parseMarkdown(plan)}</div>
+                </details>`
+            ).join('');
+        } else {
+            historyContent.innerHTML = '<div style="background: var(--muted); padding: 1rem; border-radius: 0.5rem;">No plan history found.</div>';
+        }
+
+        // Display stats
+        document.getElementById('statIterations').textContent = result.iteration || 0;
+        document.getElementById('statStatus').textContent = result.evaluation_decision === 'approved' ? '✅ Approved' : '⚠️ Max Iterations';
+        document.getElementById('statVersions').textContent = (result.plan_history || []).length;
+        document.getElementById('statFeedback').textContent = (result.feedback_list || []).filter(f => f).length;
+
+        // Download button
+        document.getElementById('downloadBtn').onclick = function() {
+            const content = result.diet_plan || '';
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diet_plan_${result.age || 'unknown'}y_${result.goal || 'unknown'}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+    }
+</script>
+{% endblock %}

@@ -12,6 +12,99 @@ Real gameplay footage - exercising while playing:
 
 ---
 
+## 🛠️ Tech Stack
+
+Our platform leverages cutting-edge technologies across AI, computer vision, and web development to deliver a seamless fitness gaming experience.
+
+### 🤖 AI & Machine Learning Frameworks
+
+#### **LangGraph**
+- **Purpose:** Orchestrates autonomous agent workflows and decision-making
+- **Used In:** Personal Fitness Agent coordination, multi-agent communication system
+- **Function:** Manages the autonomous decision flow between different specialized agents (Health & Safety, Motivation, Competition agents)
+
+#### **Gemini**
+- **Purpose:** Advanced AI model for natural language understanding and intelligent recommendations
+- **Used In:** Nutrition & Recovery Agent, personalized workout suggestions, habit analysis
+- **Function:** Generates contextual fitness advice, analyzes user behavior patterns, creates adaptive game packs
+
+#### **Groq**
+- **Purpose:** Ultra-fast LLM inference for real-time AI responses
+- **Used In:** Real-time game adaptation, instant safety decisions, quick motivation nudges
+- **Function:** Processes health signals and provides instant gameplay modifications
+
+---
+
+### 👁️ Computer Vision
+
+#### **OpenCV (cv2)**
+- **Purpose:** Real-time video processing and pose detection
+- **Used In:** 
+  - `backend/activity_api.py` - Face tracking and movement detection
+  - `activity-detection2/app.py` - Advanced exercise detection
+  - All game modules for camera-based control
+- **Function:** Captures video frames, detects face position, tracks body movements, maps physical actions to game controls
+
+#### **Haar Cascade Classifiers**
+- **Purpose:** Face detection algorithms
+- **Used In:** `backend/activity_api.py` - Initial face detection before tracking
+- **Function:** Quickly identifies face regions for efficient tracking
+
+---
+
+### 🎮 Gaming & APIs
+
+#### **Free Gaming APIs**
+- **Purpose:** Provides game mechanics, leaderboards, and tournament data
+- **Used In:** Subway Surfers integration, Temple Run mechanics, scoring systems
+- **Function:** Fetches game assets, manages game states, handles multiplayer competitions
+
+---
+
+### 💻 Frontend Technologies
+
+#### **React**
+- **Purpose:** Interactive user interface and component management
+- **Used In:** Main web application, dashboard, game selection interface
+- **Function:** Renders dynamic UI, manages state, handles user interactions, displays real-time feedback
+
+#### **Vanilla JavaScript**
+- **Purpose:** Camera access and real-time frame processing
+- **Used In:** `frontend/app.js` - WebRTC camera integration, frame capture and transmission
+- **Function:** Captures webcam feed at 15 FPS, sends frames to backend, displays visual overlays and action feedback
+
+#### **HTML5 Canvas**
+- **Purpose:** Real-time visual feedback and overlay rendering
+- **Used In:** `frontend/index.html` - Drawing face tracking boxes, boundary lines, center points
+- **Function:** Provides visual confirmation of movement detection and game control zones
+
+---
+
+### 🔧 Backend Technologies
+
+#### **Flask (Python)**
+- **Purpose:** RESTful API server and routing
+- **Used In:** 
+  - `backend/app.py` - Main application server
+  - `backend/routes.py` - API endpoints for games and exercises
+  - `backend/activity_api.py` - Activity detection endpoints
+- **Function:** Handles HTTP requests, processes video frames, returns action detection results, serves game interfaces
+
+#### **Streamlit**
+- **Purpose:** Rapid prototyping and data visualization dashboard
+- **Used In:** Agent monitoring dashboard, real-time health metrics visualization, admin controls
+- **Function:** Displays live agent decisions, visualizes user progress, shows safety alerts and performance analytics
+
+---
+
+### 📊 Additional Technologies
+
+- **NumPy:** Efficient array operations for image processing
+- **Base64 Encoding:** Secure frame transmission between frontend and backend
+- **WebRTC:** Browser-based camera access without plugins
+
+---
+
 ## Licensetic AI–Driven Concept Document
 
 **Hackathon:** Autonomous Hackathon 2026
